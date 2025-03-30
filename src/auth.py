@@ -12,8 +12,15 @@ load_dotenv()
 
 # Security settings
 SECRET_KEY = os.getenv("SECRET_KEY", secrets.token_hex(32))
-AUTH_PASSWORD = os.getenv("AUTH_PASSWORD", "admin")  # Default password, CHANGE THIS
-AUTH_TOKEN_EXPIRY = int(os.getenv("AUTH_TOKEN_EXPIRY", "86400"))  # 24 hours in seconds
+AUTH_PASSWORD = os.getenv("AUTH_PASSWORD", "admin")
+# Get token expiry and handle potential parsing errors
+try:
+    AUTH_TOKEN_EXPIRY = int(os.getenv("AUTH_TOKEN_EXPIRY", "86400"))
+except ValueError:
+    # If there's a parsing error, use the default value and log a warning
+    import logging
+    logging.warning("Error parsing AUTH_TOKEN_EXPIRY. Using default value of 86400 seconds.")
+    AUTH_TOKEN_EXPIRY = 86400
 AUTH_COOKIE_NAME = os.getenv("AUTH_COOKIE_NAME", "oz_stack_auth")
 AUTH_DISABLED = os.getenv("AUTH_DISABLED", "False").lower() == "true"
 
