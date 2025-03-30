@@ -40,14 +40,22 @@ The setup script will:
 ### Step 3: Start the development server
 
 ```bash
-# Activate the virtual environment if not already activated
 # On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
-
-# Start the server
 npm run dev
+# This will automatically activate the virtual environment and start the server
+
+# On Windows:
+npm run dev:win
+# This will automatically activate the virtual environment and start the server
+
+# If you prefer to do it manually:
+# 1. Activate the virtual environment
+source venv/bin/activate  # macOS/Linux
+# OR
+venv\Scripts\activate     # Windows
+
+# 2. Start the server
+python -m src.main
 ```
 
 ### Step 4: View your application
@@ -84,7 +92,12 @@ Refer to the full [README.md](README.md) for detailed documentation, including:
 
 ```bash
 # Start development server
-npm run dev
+npm run dev        # macOS/Linux
+npm run dev:win    # Windows
+
+# Start server with CSS build
+npm run start      # macOS/Linux
+npm run start:win  # Windows
 
 # Watch for CSS changes
 npm run watch:css
@@ -97,4 +110,10 @@ npm run clean
 
 # Reinstall everything
 npm run reinstall
+
+# Initialize database
+npm run init-db
+
+# Run desktop application
+npm run desktop
 ```

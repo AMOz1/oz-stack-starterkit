@@ -88,10 +88,12 @@ This document provides solutions to common issues you might encounter when setti
 **Problem:** Running `npm run build:css` doesn't create the output.css file.
 
 **Solution:**
+- The setup script now creates a fallback CSS file if Tailwind fails to build
 - Check tailwind.config.js for errors
 - Ensure the input CSS file exists: `src/static/css/app.css`
-- Try installing tailwindcss globally: `npm install -g tailwindcss`
-- Run the tailwind CLI directly: `npx tailwindcss -i src/static/css/app.css -o src/static/css/output.css`
+- Try installing tailwindcss and CLI: `npm install tailwindcss @tailwindcss/cli`
+- Run the tailwind CLI directly with npx: `npx tailwindcss -i src/static/css/app.css -o src/static/css/output.css`
+- If Tailwind v4 is causing issues, you can try: `npm install tailwindcss@^3.3.0 --save` and rebuild
 
 #### "CSS changes not reflecting in browser"
 
@@ -143,9 +145,12 @@ This document provides solutions to common issues you might encounter when setti
 
 **Solution:**
 - Check for errors in the console output
-- Verify your .env file has correct settings
+- Verify your .env file has correct settings and no inline comments
+- Make sure environment variables (especially numeric ones like AUTH_TOKEN_EXPIRY) can be parsed correctly
 - Check that required files exist (templates, static files)
+- Use the improved npm scripts: `npm run dev` (for macOS/Linux) or `npm run dev:win` (for Windows)
 - Try running with debug mode: `DEBUG=True python -m src.main`
+- Ensure your virtual environment is activated before running the server
 
 ### HTMX Issues
 
