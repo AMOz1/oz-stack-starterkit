@@ -7,13 +7,24 @@
     "watch:css": "tailwindcss -i src/static/css/app.css -o src/static/css/output.css --watch",
     "dev": "python -m src.main",
     "start": "npm run build:css && python -m src.main",
-    "setup": "pip install -r requirements.txt && npm install"
+    "desktop": "python -m src.desktop.run",
+    "cli": "python -m src.desktop.cli",
+    "setup": "bash setup.sh",
+    "clean": "rm -rf venv node_modules src/static/css/output.css",
+    "reinstall": "npm run clean && npm run setup",
+    "init-db": "cd src/database && alembic revision --autogenerate -m \"initial\" && alembic upgrade head"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   },
   "keywords": [
     "fastapi",
     "htmx",
     "tailwindcss",
-    "daisyui"
+    "daisyui",
+    "hyperscript",
+    "alpinejs"
   ],
   "author": "",
   "license": "ISC",
