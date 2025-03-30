@@ -1,0 +1,10 @@
+<div class="space-y-2">
+    {% for task in tasks %}
+    <div class="p-3 rounded-md {% if task.status == 'Completed' %}bg-success/10{% elif task.status == 'In Progress' %}bg-warning/10{% else %}bg-base-200{% endif %}">
+        <div class="flex justify-between items-center">
+            <span class="font-medium">{{ task.name }}</span>
+            <span class="badge {% if task.status == 'Completed' %}badge-success{% elif task.status == 'In Progress' %}badge-warning{% else %}badge-ghost{% endif %}">{{ task.status }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-primary mb-6">API Demo</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Tasks Demo -->
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h2 class="card-title">Tasks API</h2>
+                <p class="mb-4">Demonstrates fetching and rendering a list of tasks</p>
+                
+                <div 
+                    id="tasks-container" 
+                    class="p-4 bg-base-200 rounded-md min-h-[200px]"
+                    hx-get="/api/tasks/html" 
+                    hx-trigger="load"
+                >
+                    Loading tasks...
+                </div>
+                
+                <div class="card-actions justify-end mt-4">
+                    <button 
+                        class="btn btn-primary"
+                        hx-get="/api/tasks/html" 
+                        hx-target="#tasks-container"
+                    >
+                        Refresh Tasks
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Random Number Demo -->
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h2 class="card-title">Random Number Generator</h2>
+                <p class="mb-4">Demonstrates dynamic content updates</p>
+                
+                <div 
+                    id="random-container" 
+                    class="p-4 bg-base-200 rounded-md flex items-center justify-center min-h-[200px]"
+                >
+                    <span class="text-lg font-medium">Click the button to generate a random number</span>
+                </div>
+                
+                <div class="card-actions justify-end mt-4">
+                    <button 
+                        class="btn btn-secondary"
+                        hx-get="/api/random/html" 
+                        hx-target="#random-container"
+                        hx-swap="innerHTML"
+                    >
+                        Generate Random Number
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alpine.js Demo -->
+    <div class="card bg-base-100 shadow-md mt-6">
+        <div class="card-body">
+            <h2 class="card-title">Client-Side State with Alpine.js (Optional)</h2>
+            <p class="mb-4">If you prefer using a lightweight JS framework for more complex interactions</p>
+            
+            <div 
+                x-data="{ count: 0 }"
+                class="p-4 bg-base-200 rounded-md"
+            >
+                <div class="flex items-center justify-center gap-4">
+                    <button 
+                        class="btn btn-accent" 
+                        x-on:click="count--"
+                    >-</button>
+                    
+                    <span class="text-3xl font-bold" x-text="count">0</span>
+                    
+                    <button 
+                        class="btn btn-accent" 
+                        x-on:click="count++"
+                    >+</button>
+                </div>
+            </div>
+            
+            <div class="card-actions justify-end mt-4">
+                <a href="/" class="btn btn-outline">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
