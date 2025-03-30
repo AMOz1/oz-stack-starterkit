@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles */
+@layer base {
+  /* Add your base styles here */
+  body {
+    @apply min-h-screen flex flex-col;
+  }
+}
+
+@layer components {
+  /* Add your component styles here */
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn-primary {
+    @apply btn btn-primary;
+  }
+  
+  .btn-secondary {
+    @apply btn btn-secondary;
+  }
+  
+  .card-body {
+    @apply p-6;
+  }
+}
+
+@layer utilities {
+  /* Add your utility styles here */
+  .content-area {
+    @apply py-8;
+  }
+}

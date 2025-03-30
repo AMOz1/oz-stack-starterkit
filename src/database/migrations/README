@@ -1,0 +1,26 @@
+Generic single-database configuration with SQLAlchemy.
+
+To generate a new migration:
+```
+alembic revision --autogenerate -m "description of change"
+```
+
+To apply migrations:
+```
+alembic upgrade head
+```
+
+To downgrade one version:
+```
+alembic downgrade -1
+```
+
+To get current version:
+```
+alembic current
+```
+
+To get migration history:
+```
+alembic history --verbose
+```
