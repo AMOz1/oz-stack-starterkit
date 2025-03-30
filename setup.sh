@@ -39,17 +39,25 @@ check_prerequisites() {
     fi
   fi
   
-  # Check Python version
-  PYTHON_VERSION=$(python --version 2>&1 | cut -d' ' -f2)
-  PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
-  PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
-  
-  if [[ "$PYTHON_MAJOR" -lt 3 ]] || [[ "$PYTHON_MAJOR" -eq 3 && "$PYTHON_MINOR" -lt 8 ]]; then
-    print_error "Python 3.8+ is required. Found: Python $PYTHON_VERSION"
-    print_info "Please upgrade Python and try again."
-    exit 1
+  # Check Python version more robustly
+  PYTHON_VERSION_OUTPUT=$(python --version 2>&1)
+  if [[ "$PYTHON_VERSION_OUTPUT" =~ ([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+    PYTHON_MAJOR="${BASH_REMATCH[1]}"
+    PYTHON_MINOR="${BASH_REMATCH[2]}"
+    PYTHON_PATCH="${BASH_REMATCH[3]}"
+    PYTHON_VERSION="$PYTHON_MAJOR.$PYTHON_MINOR.$PYTHON_PATCH"
+    
+    if [[ "$PYTHON_MAJOR" -lt 3 ]] || [[ "$PYTHON_MAJOR" -eq 3 && "$PYTHON_MINOR" -lt 8 ]]; then
+      print_error "Python 3.8+ is required. Found: Python $PYTHON_VERSION"
+      print_info "Please upgrade Python and try again."
+      exit 1
+    else
+      print_success "Found Python $PYTHON_VERSION"
+    fi
   else
-    print_success "Found Python $PYTHON_VERSION"
+    print_error "Could not determine Python version from output: $PYTHON_VERSION_OUTPUT"
+    print_info "Please ensure you have Python 3.8+ installed and try again."
+    exit 1
   fi
   
   # Check for pip
@@ -153,6 +161,18 @@ install_node_deps() {
     exit 1
   fi
   
+  print_info "Verifying dependency versions..."
+  node verify-versions.js || {
+    print_warning "Version mismatch detected. Attempting to fix..."
+    npm run fix-versions
+    
+    # Verify again after fix attempt
+    node verify-versions.js || {
+      print_error "Could not fix version issues. Please run 'npm run fix-versions' manually."
+      exit 1
+    }
+  }
+  
   print_success "Node.js dependencies installed successfully!"
 }
 
@@ -182,7 +202,7 @@ create_env_file() {
     
     cat > .env << EOF
 # Server settings
-HOST=0.0.0.0
+HOST=127.0.0.1
 PORT=8000
 DEBUG=True
 
