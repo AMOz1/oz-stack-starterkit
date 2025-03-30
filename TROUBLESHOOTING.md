@@ -56,6 +56,31 @@ This document provides solutions to common issues you might encounter when setti
 - Check Node.js version compatibility: `node --version`
 - Make sure you have write permissions in the directory
 
+#### "Wrong Tailwind CSS or DaisyUI versions"
+
+**Problem:** The installed versions of Tailwind CSS or DaisyUI don't match the required versions (Tailwind CSS 4.x and DaisyUI 5.x).
+
+**Solution:**
+- Check installed versions with `npm list tailwindcss daisyui`
+- Run the provided verification script: `npm run verify-versions`
+- Fix the versions automatically: `npm run fix-versions`
+- If that doesn't work, manually install the correct versions:
+  ```bash
+  npm install tailwindcss@^4.0.0 daisyui@^5.0.9 --save
+  ```
+- Clear npm cache if needed: `npm cache clean --force`
+- Delete node_modules and reinstall: `rm -rf node_modules && npm install`
+
+#### "Circular dependency error in Tailwind CSS"
+
+**Problem:** Building CSS fails with a message about circular dependencies.
+
+**Solution:**
+- Avoid using `@apply` with component classes like `btn-primary` inside component definitions
+- Instead of nesting component classes, extend the base components with more specific utility classes
+- Check your app.css file for circular references between component classes
+- Simplify complex CSS class hierarchies
+
 ### CSS Issues
 
 #### "CSS not being generated"
@@ -98,6 +123,19 @@ This document provides solutions to common issues you might encounter when setti
   netstat -ano | findstr :8000
   taskkill /PID <PID> /F
   ```
+
+#### "Connection refused errors"
+
+**Problem:** Browser shows "refused to connect" errors when accessing localhost:8000.
+
+**Solution:**
+- Check that the server is actually running
+- Verify the HOST setting in your .env file:
+  - Try using `127.0.0.1` instead of `0.0.0.0`
+  - Some systems may have network interface binding issues with `0.0.0.0`
+- Make sure you're using the correct port number
+- Check if a firewall is blocking connections
+- Try accessing using http://127.0.0.1:8000 explicitly
 
 #### "Server crashes on startup"
 

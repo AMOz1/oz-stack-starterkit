@@ -5,9 +5,12 @@ A bulletproof, production-ready application starter kit built with:
 - **Backend**: FastAPI (Python)
 - **Frontend**: HTMX + Desktop UI with CustomTkinter
 - **Database**: SQLite with SQLAlchemy ORM
-- **Styling**: Tailwind CSS + DaisyUI
+- **Styling**: Tailwind CSS 4.x + DaisyUI 5.x
 - **Optional JS**: Hyperscript, Alpine.js
 - **Authentication**: Simple password protection
+
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![DaisyUI](https://img.shields.io/badge/DaisyUI-5.0.9-5A0EF8?style=flat&logo=daisyui&logoColor=white)](https://daisyui.com/)
 
 ## Comprehensive Setup Guide
 
@@ -115,6 +118,25 @@ npm install
 npm run build:css
 ```
 
+### Dependency Verification
+
+This starter kit requires specific versions of key dependencies:
+
+- **Tailwind CSS**: 4.x
+- **DaisyUI**: 5.x
+
+After installation, verify you have the correct versions:
+
+```bash
+npm run verify-versions
+```
+
+If you need to fix version issues:
+
+```bash
+npm run fix-versions
+```
+
 ### Configuration
 
 #### Environment Variables
@@ -130,7 +152,7 @@ Add the following configuration (customize as needed):
 
 ```
 # Server settings
-HOST=0.0.0.0
+HOST=127.0.0.1
 PORT=8000
 DEBUG=True
 
@@ -347,6 +369,18 @@ Change the port in your `.env` file or directly in the command:
 ```bash
 PORT=8001 python -m src.main
 ```
+
+#### Connection refused when trying to access the app
+
+If you can't connect to the application in your browser:
+
+```bash
+# Try changing the HOST in your .env file from 0.0.0.0 to 127.0.0.1
+HOST=127.0.0.1
+# Then restart the server
+```
+
+Some systems have network interface binding issues with 0.0.0.0. Using 127.0.0.1 (localhost) is more reliable for local development.
 
 #### Virtual environment issues
 
