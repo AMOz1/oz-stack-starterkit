@@ -3,7 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
-.env
+.env                # Main environment file
+.env.*              # Any other environment files
 *.egg-info/
 *.egg
 dist/
@@ -28,6 +29,7 @@ Thumbs.db
 # IDE specific
 .idea/
 .vscode/
+.cursor/
 *.sublime-project
 *.sublime-workspace
 .project

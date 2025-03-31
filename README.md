@@ -20,14 +20,44 @@ A bulletproof, production-ready application starter kit built with:
 
 Before beginning, ensure you have the following installed on your system:
 
-- **Python 3.8+** - [Download & Install Python](https://www.python.org/downloads/)
+- **Python 3.11** (Required) - [Download & Install Python](https://www.python.org/downloads/)
   ```bash
   # Verify Python installation
-  # On macOS:
-  python3 --version  # Should show 3.8 or higher
-  # On Windows/Linux:
-  python --version   # Should show 3.8 or higher
+  python3 --version  # Must show exactly 3.11.x
   ```
+  
+  > ⚠️ **Important**: This project specifically requires Python 3.11 due to dependency compatibility. Other versions (including newer ones like 3.13) are not supported.
+  
+  **Installing Python 3.11:**
+  - On macOS (recommended):
+    ```bash
+    brew install python@3.11
+    # Add to your PATH (add to ~/.zshrc or ~/.bash_profile)
+    export PATH="/opt/homebrew/opt/python@3.11/bin:$PATH"
+    ```
+  - On Windows: Download Python 3.11.x from [Python.org](https://www.python.org/downloads/)
+  - On Linux: Use your package manager to install Python 3.11
+
+- **Rust Toolchain** (Required) - Some Python dependencies require Rust to compile
+  ```bash
+  # Install Rust (all platforms)
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  
+  # Verify Rust installation
+  rustc --version  # Should show any recent version
+  cargo --version  # Should show any recent version
+  ```
+  
+  > ⚠️ **Note**: If you skip this step, you'll see cryptography-related errors during pip install.
+  
+  **Platform-specific notes:**
+  - On macOS:
+    ```bash
+    # Can also install via Homebrew
+    brew install rust
+    ```
+  - On Windows: Download the installer from [rustup.rs](https://rustup.rs)
+  - On Linux: Most package managers have rust and cargo packages available
 
 - **Node.js 14+** and **npm 6+** - [Download & Install Node.js](https://nodejs.org/)
   ```bash
@@ -133,32 +163,40 @@ python -m alembic upgrade head
 
 The database file (app.db) will be created in the project root directory.
 
-##### 4. Install Node.js dependencies
+##### 4. Install Tailwind CSS
 
 ```bash
-# Install Tailwind CSS, CLI, and DaisyUI
-npm install tailwindcss@latest @tailwindcss/cli@latest daisyui@latest
+# Download Tailwind CSS standalone CLI for macOS ARM (M-series)
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-macos-arm64
+chmod +x tailwindcss-macos-arm64
+mv tailwindcss-macos-arm64 tailwindcss
 
-# Install other project dependencies
-npm install
+# Initialize Tailwind configuration
+./tailwindcss init
 ```
 
 ##### 5. Initialize and Build CSS
 
 ```bash
-# Create Tailwind CSS input file with DaisyUI
+# Create Tailwind CSS input file
 cat > src/static/css/app.css << EOL
-@import "tailwindcss" source(none);
-@source "./src/templates/**/*.{html,js}";
-@plugin "daisyui";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Your custom components here */
+}
 EOL
 
 # Build CSS (one-time build)
-npx @tailwindcss/cli -i ./src/static/css/app.css -o ./src/static/css/output.css
+./tailwindcss -i ./src/static/css/app.css -o ./src/static/css/output.css --minify
 
 # Or start the CSS watcher for development
-npx @tailwindcss/cli -i ./src/static/css/app.css -o ./src/static/css/output.css --watch
+./tailwindcss -i ./src/static/css/app.css -o ./src/static/css/output.css --watch
 ```
+
+> ⚠️ **Note**: This setup uses the standalone Tailwind CLI, which is perfect for macOS M-series computers and doesn't require Node.js. If you need DaisyUI or other plugins, you'll need to add them to your `tailwind.config.js` file.
 
 ### Dependency Verification
 
@@ -183,48 +221,18 @@ npm run fix-versions
 
 #### Environment Variables
 
-Create a `.env` file in the project root (it's gitignored by default):
+The project includes a pre-configured `.env` file with sensible defaults for local development. This file is git-ignored for security, but contains all necessary settings for immediate development on your MacMini M4.
 
-```bash
-# Create .env file
-touch .env
-```
+Key environment variables include:
+- `HOST`: Set to `127.0.0.1` for reliable local development
+- `PORT`: Default is `8000`
+- `DEBUG`: Set to `True` for development
+- `SECRET_KEY`: Pre-generated secure key
+- `AUTH_PASSWORD`: Your preferred password for the admin interface
+- `DATABASE_URL`: SQLite database path
+- `CTK_APPEARANCE`: Desktop UI theme preference
 
-Add the following configuration (customize as needed):
-
-```
-# Server settings
-HOST=127.0.0.1
-PORT=8000
-DEBUG=True
-
-# Application settings
-APP_NAME="Oz Stack Starter Kit"
-APP_VERSION="1.0.0"
-
-# Authentication settings
-# Generate a good secret key with: python -c "import secrets; print(secrets.token_hex(32))"
-SECRET_KEY="your-secure-secret-key-here-at-least-32-chars"
-AUTH_PASSWORD="admin"  # Change this to a secure password
-AUTH_TOKEN_EXPIRY=86400  # 24 hours in seconds
-AUTH_COOKIE_NAME="oz_stack_auth"
-AUTH_DISABLED=False  # Set to True to disable authentication
-
-# Database settings
-DATABASE_URL="sqlite:///./app.db"  # SQLite database path
-
-# Desktop application settings
-DESKTOP_MODE=False  # Set to True to run the desktop app
-CTK_APPEARANCE="System"  # Options: System, Light, Dark
-CTK_THEME="blue"  # Options: blue, green, dark-blue
-```
-
-For your convenience, you can copy the `.env.example` file:
-
-```bash
-cp .env.example .env
-# Then edit the file to customize your settings
-```
+> ⚠️ **Note**: The `.env` file is automatically created during the setup process. If you need to recreate it manually, you can find a backup copy in your personal notes or contact the repository owner.
 
 ## Development Workflow
 
@@ -499,3 +507,24 @@ git --version      # Should show 2.x or higher
 ```
 
 If any of these commands fail or show incorrect versions, please revisit the installation steps for that component.
+
+### Database Configuration
+
+The starter kit uses SQLite with SQLAlchemy ORM, configured for reliability:
+
+##### 3b. Initialize the database
+
+```bash
+# Create and update the database with all models
+python -m alembic upgrade head
+```
+
+The database file (app.db) will be created in the project root directory.
+
+> ⚠️ **Important Database Settings**:
+> - Connection timeout: 30 seconds
+> - Connection pool size: 5 connections
+> - Pool recycling: Every 30 minutes
+> - Pre-ping enabled: Yes (verifies connections before use)
+> 
+> These settings can be adjusted in your `.env` file if needed.
