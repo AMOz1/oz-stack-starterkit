@@ -1,5 +1,7 @@
 # Oz Stack Starter Kit
 
+A personal, opinionated starter kit for macOS development with Python and HTMX. Built for clean, efficient development without unnecessary complexity.
+
 A bulletproof, production-ready application starter kit built with:
 
 - **Backend**: FastAPI (Python)
@@ -20,21 +22,24 @@ Before beginning, ensure you have the following installed on your system:
 
 - **Python 3.8+** - [Download & Install Python](https://www.python.org/downloads/)
   ```bash
-  # Verify installation
-  python --version  # Should be 3.8 or higher
+  # Verify Python installation
+  # On macOS:
+  python3 --version  # Should show 3.8 or higher
+  # On Windows/Linux:
+  python --version   # Should show 3.8 or higher
   ```
 
 - **Node.js 14+** and **npm 6+** - [Download & Install Node.js](https://nodejs.org/)
   ```bash
-  # Verify installation
-  node --version  # Should be 14.x or higher
-  npm --version   # Should be 6.x or higher
+  # Verify Node.js and npm installation
+  node --version     # Should show 14.x or higher
+  npm --version      # Should show 6.x or higher
   ```
 
 - **Git** - [Download & Install Git](https://git-scm.com/downloads)
   ```bash
-  # Verify installation
-  git --version
+  # Verify Git installation
+  git --version      # Should show 2.x or higher
   ```
 
 #### macOS-specific Prerequisites
@@ -47,7 +52,27 @@ If using macOS:
 
 # Install Python, Node.js, and Git
 brew install python node git
+
+# Important: On macOS, Python is installed as 'python3'
+# Verify the installation:
+python3 --version
+# If you want to use just 'python' command, you can add an alias to your shell:
+echo "alias python=python3" >> ~/.zshrc  # for zsh (default in newer macOS)
+# OR
+echo "alias python=python3" >> ~/.bash_profile  # for bash
 ```
+
+Let me explain why each part is important:
+
+1. **Homebrew Installation**: This is the package manager for macOS, making it easier to install and manage software
+2. **Installing Dependencies**: Using Homebrew to install Python, Node.js, and Git in one command
+3. **Python3 Clarification**: This explicitly tells macOS users that they need to use `python3` command
+4. **Optional Alias**: This helps users who want to use just `python` instead of `python3`
+
+Would you like me to:
+1. Show you exactly where this section should go in the file (line numbers)?
+2. Explain any of these parts in more detail?
+3. Help you with applying any other sections from our previous suggestions?
 
 #### Windows-specific Prerequisites
 
@@ -86,17 +111,10 @@ cd oz-stack-starterkit
 
 ```bash
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows (Command Prompt):
-venv\Scripts\activate.bat
-# On Windows (PowerShell):
-venv\Scripts\Activate.ps1
-# On Windows (Git Bash):
-source venv/Scripts/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 ##### 3. Install Python dependencies
@@ -106,21 +124,45 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+##### 3b. Initialize the database
+
+```bash
+# Create and update the database with all models
+python -m alembic upgrade head
+```
+
+The database file (app.db) will be created in the project root directory.
+
 ##### 4. Install Node.js dependencies
 
 ```bash
+# Install Tailwind CSS, CLI, and DaisyUI
+npm install tailwindcss@latest @tailwindcss/cli@latest daisyui@latest
+
+# Install other project dependencies
 npm install
 ```
 
-##### 5. Build the CSS
+##### 5. Initialize and Build CSS
 
 ```bash
-npm run build:css
+# Create Tailwind CSS input file with DaisyUI
+cat > src/static/css/app.css << EOL
+@import "tailwindcss" source(none);
+@source "./src/templates/**/*.{html,js}";
+@plugin "daisyui";
+EOL
+
+# Build CSS (one-time build)
+npx @tailwindcss/cli -i ./src/static/css/app.css -o ./src/static/css/output.css
+
+# Or start the CSS watcher for development
+npx @tailwindcss/cli -i ./src/static/css/app.css -o ./src/static/css/output.css --watch
 ```
 
 ### Dependency Verification
 
-This starter kit requires specific versions of key dependencies:
+This starter kit requires specific versions of key dependencies, all installed locally per project:
 
 - **Tailwind CSS**: 4.x
 - **DaisyUI**: 5.x
@@ -206,8 +248,8 @@ In a separate terminal:
 # Make sure to activate the virtual environment in this terminal too
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Start the CSS watcher
-npm run watch:css
+# Start the Tailwind CSS watcher with DaisyUI
+npx @tailwindcss/cli -i ./src/static/css/app.css -o ./src/static/css/output.css --watch
 ```
 
 ### Stopping the servers
@@ -436,3 +478,24 @@ gunicorn -w 4 -k uvicorn.workers.UvicornWorker src.main:app
 ## License
 
 This project is licensed under the ISC License.
+
+### Verify All Prerequisites
+
+Run these commands to ensure all required software is properly installed:
+
+```bash
+# Python version check
+# On macOS:
+python3 --version  # Should show 3.8 or higher
+# On Windows/Linux:
+python --version   # Should show 3.8 or higher
+
+# Node.js and npm check
+node --version     # Should show 14.x or higher
+npm --version      # Should show 6.x or higher
+
+# Git check
+git --version      # Should show 2.x or higher
+```
+
+If any of these commands fail or show incorrect versions, please revisit the installation steps for that component.
